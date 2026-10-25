@@ -296,7 +296,7 @@ app/src/main/java/com/example/vorratsheld/
 **Voraussetzungen:** Android Studio (aktuelle Version), JDK 17, ein Firebase-Projekt.
 
 ```bash
-git clone https://github.com/Ali313/Vorratsheld-Android.git
+git clone https://github.com/Ali-C313/Vorratsheld-Android.git
 ```
 
 1. Projekt in Android Studio öffnen und Gradle synchronisieren.
@@ -323,6 +323,6 @@ git clone https://github.com/Ali313/Vorratsheld-Android.git
 
 **Vorratsheld** · entwickelt von **Ali Chehab** im Rahmen der Android-Weiterbildung am Syntax Institut
 
-[![GitHub](https://img.shields.io/badge/GitHub-Ali313-181717?style=flat-square&logo=github)](https://github.com/Ali313)
+[![GitHub](https://img.shields.io/badge/GitHub-Ali--C313-181717?style=flat-square&logo=github)](https://github.com/Ali-C313)
 
 </div>
