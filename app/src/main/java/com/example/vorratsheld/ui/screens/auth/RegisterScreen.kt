@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vorratsheld.R
 import com.example.vorratsheld.data.repository.AuthRepositoryMock
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.data.repository.UserRepositoryMock
 import com.example.vorratsheld.ui.components.AuthLayout
 import com.example.vorratsheld.ui.components.AuthTextField
@@ -162,7 +163,7 @@ private fun RegisterScreenPreview() {
         RegisterScreen(
             onRegistered = {},
             onBack = {},
-            authViewModel = AuthViewModel(AuthRepositoryMock(loggedIn = false), UserRepositoryMock())
+            authViewModel = AuthViewModel(AuthRepositoryMock(loggedIn = false), UserRepositoryMock(), SettingsRepositoryMock())
         )
     }
 }
