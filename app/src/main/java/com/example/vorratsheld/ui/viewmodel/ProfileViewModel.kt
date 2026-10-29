@@ -6,9 +6,9 @@ import com.example.vorratsheld.R
 import com.example.vorratsheld.data.model.UserProfile
 import com.example.vorratsheld.data.repository.AuthRepository
 import com.example.vorratsheld.data.repository.ProductRepository
+import com.example.vorratsheld.data.repository.SettingsRepository
 import com.example.vorratsheld.data.repository.ShoppingRepository
 import com.example.vorratsheld.data.repository.UserRepository
-import com.example.vorratsheld.data.settings.AppLockSettings
 import com.example.vorratsheld.ui.state.ProfileUiState
 import kotlin.io.encoding.Base64
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,8 @@ class ProfileViewModel(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val productRepository: ProductRepository,
-    private val shoppingRepository: ShoppingRepository
+    private val shoppingRepository: ShoppingRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -45,8 +46,7 @@ class ProfileViewModel(
                         lastName = profile.lastName.ifBlank { fallbackLast },
                         photoBase64 = profile.photoBase64,
                         email = user.email,
-                        newEmail = user.email,
-                        isLoading = false
+                        newEmail = user.email
                     )
                 }
                 .onFailure { e ->
@@ -55,7 +55,6 @@ class ProfileViewModel(
                         lastName = fallbackLast,
                         email = user.email,
                         newEmail = user.email,
-                        isLoading = false,
                         errorMessage = e.message
                     )
                 }
@@ -158,7 +157,7 @@ class ProfileViewModel(
                 shoppingRepository.deleteAllItems(user.uid).getOrThrow()
                 userRepository.deleteProfile(user.uid).getOrThrow()
                 authRepository.deleteUser().getOrThrow()
-                AppLockSettings.clear()
+                settingsRepository.clearAppLock()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isSaving = false, errorMessage = e.message)
             }
