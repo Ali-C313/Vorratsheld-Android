@@ -134,7 +134,7 @@ flowchart LR
 
 ## Architektur
 
-Die App folgt **MVVM** mit Repository-Pattern. Jede Datenquelle steckt hinter einem Interface – im Betrieb die Firebase- bzw. API-Umsetzung, in den Compose-Previews ein Mock. Koin verbindet alles: ViewModels und Repositories werden zentral im `AppModule` erzeugt. So laufen alle Previews ohne Internet und ohne Firebase.
+Die App folgt **MVVM** mit Repository-Pattern. Jede Datenquelle steckt hinter einem Interface – im Betrieb die Firebase- bzw. API-Umsetzung, in den Compose-Previews ein Mock. Auch lokale Einstellungen wie Sprache und App-Sperre laufen über ein `SettingsRepository`, die Screens greifen nie direkt auf Daten zu. Koin verbindet alles: ViewModels und Repositories werden zentral im `AppModule` erzeugt. So laufen alle Previews ohne Internet und ohne Firebase.
 
 ```mermaid
 flowchart TB
@@ -242,8 +242,8 @@ erDiagram
 
 | | |
 |---|---|
-| Kotlin-Dateien | 151 |
-| Zeilen Code | ~ 9.700 |
+| Kotlin-Dateien | 157 |
+| Zeilen Code | ~ 10.000 |
 | Compose-Previews | 31 |
 | Screens | 15 |
 | Sprachen | 10 |
@@ -267,26 +267,24 @@ erDiagram
 
 ```
 app/src/main/java/com/example/vorratsheld/
-├── biometric/        Fingerabdruck & Gesicht (BiometricPrompt)
-├── camera/           Kamera-Vorschau, Barcode- und MHD-Scanner
 ├── data/
 │   ├── enums/        Lagerort, Ablauf-Stufen, Sprachen, …
+│   ├── local/        Lokale Einstellungen (DataStore)
 │   ├── model/        Data Classes (Product, ShoppingItem, …)
 │   ├── remote/       Retrofit-APIs, DTOs, Collection-Namen
-│   ├── repository/   Interface · Impl · Mock
-│   └── settings/     Lokale Einstellungen (DataStore)
+│   └── repository/   Interface · Impl · Mock
 ├── di/               App-Klasse (startet Koin) und AppModule
-├── notification/     Channel & Erinnerungs-Abfrage
+├── service/          App-Sperre, Biometrie, Benachrichtigungen, WorkManager
 ├── ui/
 │   ├── AppStart.kt   Einstiegspunkt der UI
-│   ├── components/   Wiederverwendbare Composables
+│   ├── components/   Wiederverwendbare Composables (inkl. camera/)
+│   ├── locale/       Sprachwechsel in der App
 │   ├── navigation/   NavGraph & Routen
 │   ├── screens/      Ein Ordner pro Screen
 │   ├── state/        UiStates
 │   ├── theme/        Farben, Formen, Typografie
 │   └── viewmodel/    ViewModels
-├── util/             Helper (Datum, MHD-Parser, Bilder, …)
-└── worker/           Täglicher Ablauf-Check
+└── util/             Helper (Datum, MHD-Erkennung, Bilder, App-Info)
 ```
 
 ---
