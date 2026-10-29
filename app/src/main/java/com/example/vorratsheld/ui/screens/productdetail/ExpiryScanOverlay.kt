@@ -44,10 +44,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.vorratsheld.R
-import com.example.vorratsheld.camera.ExpiryTextScanner
 import com.example.vorratsheld.ui.components.TorchButton
+import com.example.vorratsheld.ui.components.camera.ExpiryTextScanner
 import com.example.vorratsheld.util.DateHelper
-import com.example.vorratsheld.util.ExpiryDateParser
+import com.example.vorratsheld.util.ExpiryDateHelper
 import kotlinx.datetime.LocalDate
 
 // Vollbild-Kamera, die das MHD von der Verpackung abliest
@@ -74,7 +74,7 @@ fun ExpiryScanOverlay(
             modifier = Modifier.fillMaxSize(),
             torchEnabled = torchEnabled,
             onTextRecognized = { text ->
-                val date = ExpiryDateParser.parse(text)
+                val date = ExpiryDateHelper.parse(text)
                 // Erst anzeigen, wenn zwei Bilder hintereinander dasselbe Datum liefern
                 if (date != null && date == lastSeen) detected = date
                 lastSeen = date
@@ -154,7 +154,7 @@ fun ExpiryScanOverlay(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                text = DateHelper.formatDate(ExpiryDateParser.toMillis(date)),
+                                text = DateHelper.formatDate(ExpiryDateHelper.toMillis(date)),
                                 style = MaterialTheme.typography.displaySmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary
@@ -164,7 +164,7 @@ fun ExpiryScanOverlay(
                 }
 
                 Button(
-                    onClick = { detected?.let { onDateConfirmed(ExpiryDateParser.toMillis(it)) } },
+                    onClick = { detected?.let { onDateConfirmed(ExpiryDateHelper.toMillis(it)) } },
                     enabled = detected != null,
                     modifier = Modifier
                         .padding(top = 16.dp)
