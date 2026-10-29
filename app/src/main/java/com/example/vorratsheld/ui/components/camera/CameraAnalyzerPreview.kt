@@ -1,4 +1,4 @@
-package com.example.vorratsheld.camera
+package com.example.vorratsheld.ui.components.camera
 
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
