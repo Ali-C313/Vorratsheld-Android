@@ -26,8 +26,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.vorratsheld.R
-import com.example.vorratsheld.camera.BarcodeScanner
 import com.example.vorratsheld.ui.components.TorchButton
+import com.example.vorratsheld.ui.components.camera.BarcodeScanner
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
 
 // Kamera + Erkennung mit CameraX/ML Kit,
