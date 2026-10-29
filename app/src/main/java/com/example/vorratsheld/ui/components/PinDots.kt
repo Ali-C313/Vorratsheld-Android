@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.vorratsheld.data.settings.AppLockSettings
+import com.example.vorratsheld.data.local.AppLockSettings
 import com.example.vorratsheld.ui.theme.Cream
 
 // Punkte für die eingegebenen PIN-Ziffern, wackeln bei falschem PIN
