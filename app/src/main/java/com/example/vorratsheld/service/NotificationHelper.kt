@@ -1,4 +1,4 @@
-package com.example.vorratsheld.notification
+package com.example.vorratsheld.service
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.vorratsheld.R
-import com.example.vorratsheld.data.settings.AppSettings
+import com.example.vorratsheld.data.local.AppSettings
 import java.util.Locale
 
 // Bündelt alles rund um den Notification-Channel und das Anzeigen der Ablauf-Erinnerung
