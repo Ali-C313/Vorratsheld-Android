@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
 
 /** Großer Button mit Lade-Kreisel. */
+// Großer Hauptbutton, zeigt beim Laden einen Spinner
 @Composable
 fun PrimaryButton(
     text: String,
