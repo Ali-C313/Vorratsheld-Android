@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.vorratsheld.data.model.User
 import com.example.vorratsheld.data.model.UserProfile
 import com.example.vorratsheld.data.repository.AuthRepository
+import com.example.vorratsheld.data.repository.SettingsRepository
 import com.example.vorratsheld.data.repository.UserRepository
-import com.example.vorratsheld.data.settings.AppLockSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 // Hält den Login-Zustand für die Login/Register-Screens
 class AuthViewModel(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _currentUser = MutableStateFlow<User?>(authRepository.getCurrentUser())
@@ -78,7 +79,7 @@ class AuthViewModel(
         viewModelScope.launch {
             authRepository.logout()
             // PIN gehört zum Konto, der nächste Nutzer legt sich einen eigenen an
-            AppLockSettings.clear()
+            settingsRepository.clearAppLock()
             _currentUser.value = null
         }
     }
