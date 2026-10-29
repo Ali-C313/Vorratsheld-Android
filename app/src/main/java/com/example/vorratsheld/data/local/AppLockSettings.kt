@@ -1,4 +1,4 @@
-package com.example.vorratsheld.data.settings
+package com.example.vorratsheld.data.local
 
 import com.example.vorratsheld.data.enums.LockTimeout
 import java.security.MessageDigest
