@@ -1,4 +1,4 @@
-package com.example.vorratsheld.camera
+package com.example.vorratsheld.ui.components.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
