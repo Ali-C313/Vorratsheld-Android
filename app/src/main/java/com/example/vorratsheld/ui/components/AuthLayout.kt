@@ -41,6 +41,7 @@ import com.example.vorratsheld.R
  * Gemeinsames Layout für Login und Registrierung: grüner Kopf mit wehendem Logo,
  * darunter eine runde Karte mit dem Formular. Hält Abstand zu Statusleiste, Navigationsleiste und Tastatur.
  */
+// Gemeinsamer Rahmen für Login und Registrierung: Logo, Titel und Formular
 @Composable
 fun AuthLayout(
     title: String,
