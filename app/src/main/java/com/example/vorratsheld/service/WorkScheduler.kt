@@ -1,4 +1,4 @@
-package com.example.vorratsheld.worker
+package com.example.vorratsheld.service
 
 import android.content.Context
 import androidx.work.Constraints
