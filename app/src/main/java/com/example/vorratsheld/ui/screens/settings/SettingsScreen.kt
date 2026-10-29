@@ -48,16 +48,17 @@ import com.example.vorratsheld.data.enums.AppLanguage
 import com.example.vorratsheld.data.enums.LegalType
 import com.example.vorratsheld.data.repository.AuthRepositoryMock
 import com.example.vorratsheld.data.repository.ProductRepositoryMock
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.data.repository.ShoppingRepositoryMock
 import com.example.vorratsheld.data.repository.UserRepositoryMock
-import com.example.vorratsheld.data.settings.AppLockSettings
 import com.example.vorratsheld.ui.components.SettingsItem
 import com.example.vorratsheld.ui.components.SettingsSectionTitle
 import com.example.vorratsheld.ui.locale.customAppLocale
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
+import com.example.vorratsheld.ui.viewmodel.AppLockViewModel
 import com.example.vorratsheld.ui.viewmodel.AuthViewModel
 import com.example.vorratsheld.ui.viewmodel.ProfileViewModel
-import com.example.vorratsheld.util.APP_VERSION
+import com.example.vorratsheld.util.AppInfo
 import org.koin.androidx.compose.koinViewModel
 
 // Einstellungen: Profil, Sprache, App-Sperre, Hilfe, Rechtliches, Abmelden
@@ -71,15 +72,16 @@ fun SettingsScreen(
     onNavigateToHelp: () -> Unit,
     onNavigateToLegal: (LegalType) -> Unit,
     authViewModel: AuthViewModel = koinViewModel(),
-    profileViewModel: ProfileViewModel = koinViewModel()
+    profileViewModel: ProfileViewModel = koinViewModel(),
+    appLockViewModel: AppLockViewModel = koinViewModel()
 ) {
     val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
-    var appLockEnabled by remember { mutableStateOf(AppLockSettings.enabled) }
+    val appLockState by appLockViewModel.uiState.collectAsStateWithLifecycle()
 
     // Nach "Profil bearbeiten" bzw. "App-Sperre" die Anzeige aktualisieren
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         profileViewModel.loadProfile()
-        appLockEnabled = AppLockSettings.enabled
+        appLockViewModel.refresh()
     }
 
     val currentLanguage = AppLanguage.entries.firstOrNull { it.code == customAppLocale }?.nativeName
@@ -130,7 +132,7 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Filled.Lock,
                     title = stringResource(R.string.settings_app_lock),
-                    subtitle = stringResource(if (appLockEnabled) R.string.state_on else R.string.state_off),
+                    subtitle = stringResource(if (appLockState.enabled) R.string.state_on else R.string.state_off),
                     onClick = onNavigateToAppLock
                 )
             }
@@ -177,7 +179,7 @@ fun SettingsScreen(
             }
 
             Text(
-                text = stringResource(R.string.settings_version, APP_VERSION),
+                text = stringResource(R.string.settings_version, AppInfo.VERSION),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -220,8 +222,9 @@ private fun SettingsScreenPreview() {
             onNavigateToAppLock = {},
             onNavigateToHelp = {},
             onNavigateToLegal = {},
-            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock()),
-            profileViewModel = ProfileViewModel(AuthRepositoryMock(), UserRepositoryMock(), ProductRepositoryMock(), ShoppingRepositoryMock())
+            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock(), SettingsRepositoryMock()),
+            profileViewModel = ProfileViewModel(AuthRepositoryMock(), UserRepositoryMock(), ProductRepositoryMock(), ShoppingRepositoryMock(), SettingsRepositoryMock()),
+            appLockViewModel = AppLockViewModel(SettingsRepositoryMock())
         )
     }
 }
