@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vorratsheld.R
 import com.example.vorratsheld.data.repository.AuthRepositoryMock
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.data.repository.ShoppingRepositoryMock
 import com.example.vorratsheld.data.repository.UserRepositoryMock
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
@@ -136,7 +137,7 @@ private fun ShoppingListScreenPreview() {
         ShoppingListScreen(
             onBack = {},
             viewModel = ShoppingListViewModel(ShoppingRepositoryMock()).apply { load(AuthRepositoryMock.MOCK_USER_ID) },
-            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock())
+            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock(), SettingsRepositoryMock())
         )
     }
 }
