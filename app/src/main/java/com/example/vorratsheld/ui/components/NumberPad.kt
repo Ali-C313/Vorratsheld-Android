@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.vorratsheld.R
 
-// Ziffernfeld 0–9 mit Löschen und optionaler Extra-Taste (z. B. Fingerabdruck)
+// Ziffernfeld 0 bis 9 mit Löschen und optionaler Extra-Taste (z. B. Fingerabdruck)
 @Composable
 fun NumberPad(
     onDigit: (Char) -> Unit,
