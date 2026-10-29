@@ -1,5 +1,6 @@
 package com.example.vorratsheld.ui.screens.lock
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,21 +35,23 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vorratsheld.R
-import com.example.vorratsheld.biometric.rememberBiometricAuthenticator
 import com.example.vorratsheld.data.enums.BiometricResult
 import com.example.vorratsheld.data.enums.BiometricType
-import com.example.vorratsheld.data.settings.AppLockSettings
+import com.example.vorratsheld.data.local.AppLockSettings
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
+import com.example.vorratsheld.service.rememberBiometricAuthenticator
 import com.example.vorratsheld.ui.components.PadIconKey
 import com.example.vorratsheld.ui.components.PinPad
 import com.example.vorratsheld.ui.components.VorratsheldLogo
 import com.example.vorratsheld.ui.theme.LockGradient
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
+import com.example.vorratsheld.ui.viewmodel.AppLockViewModel
 import com.example.vorratsheld.util.BiometricHelper
-import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val ATTEMPTS_BEFORE_WAIT = 5
 
@@ -56,11 +59,13 @@ private const val ATTEMPTS_BEFORE_WAIT = 5
 @Composable
 fun LockScreen(
     onUnlocked: () -> Unit,
-    onForgotPin: () -> Unit
+    onForgotPin: () -> Unit,
+    viewModel: AppLockViewModel = koinViewModel()
 ) {
     val authenticator = rememberBiometricAuthenticator()
-    val biometricType = remember {
-        if (AppLockSettings.biometricsEnabled) authenticator.type else BiometricType.NONE
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val biometricType = remember(uiState.biometricsEnabled) {
+        if (uiState.biometricsEnabled) authenticator.type else BiometricType.NONE
     }
     val scope = rememberCoroutineScope()
 
@@ -107,9 +112,7 @@ fun LockScreen(
         if (entered.length == AppLockSettings.PIN_LENGTH) {
             val pin = entered
             checking = true
-            scope.launch {
-                // Hash mit vielen Runden, deshalb nicht auf dem UI-Thread
-                val correct = withContext(Dispatchers.Default) { AppLockSettings.checkPin(pin) }
+            viewModel.checkPin(pin) { correct ->
                 checking = false
                 if (correct) {
                     onUnlocked()
@@ -204,10 +207,15 @@ fun LockScreen(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 private fun LockScreenPreview() {
     VorratsheldTheme {
-        LockScreen(onUnlocked = {}, onForgotPin = {})
+        LockScreen(
+            onUnlocked = {},
+            onForgotPin = {},
+            viewModel = AppLockViewModel(SettingsRepositoryMock())
+        )
     }
 }
