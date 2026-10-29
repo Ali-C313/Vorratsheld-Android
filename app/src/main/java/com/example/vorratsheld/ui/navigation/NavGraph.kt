@@ -20,7 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.vorratsheld.data.enums.LegalType
-import com.example.vorratsheld.data.settings.AppSettings
+import com.example.vorratsheld.service.AppLock
 import com.example.vorratsheld.ui.screens.applock.AppLockSettingsScreen
 import com.example.vorratsheld.ui.screens.auth.LoginScreen
 import com.example.vorratsheld.ui.screens.auth.RegisterScreen
@@ -38,7 +38,7 @@ import com.example.vorratsheld.ui.screens.settings.SettingsScreen
 import com.example.vorratsheld.ui.screens.shoppinglist.ShoppingListScreen
 import com.example.vorratsheld.ui.screens.splash.SplashScreen
 import com.example.vorratsheld.ui.viewmodel.AuthViewModel
-import com.example.vorratsheld.util.AppLock
+import com.example.vorratsheld.ui.viewmodel.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 // Splash nur einmal pro App-Start zeigen (nicht nochmal nach einem Sprachwechsel)
@@ -48,7 +48,8 @@ private var introShownThisSession = false
 @Composable
 fun VorratsheldNavGraph(
     navController: NavHostController = rememberNavController(),
-    authViewModel: AuthViewModel = koinViewModel()
+    authViewModel: AuthViewModel = koinViewModel(),
+    settingsViewModel: SettingsViewModel = koinViewModel()
 ) {
     val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle()
 
@@ -96,7 +97,7 @@ fun VorratsheldNavGraph(
                     onFinished = {
                         introShownThisSession = true
                         introDone = true
-                        val target = if (AppSettings.onboardingDone) afterIntro() else Screen.Onboarding
+                        val target = if (settingsViewModel.isOnboardingDone()) afterIntro() else Screen.Onboarding
                         navController.navigate(target) {
                             popUpTo(Screen.Splash) { inclusive = true }
                         }
@@ -106,7 +107,7 @@ fun VorratsheldNavGraph(
             composable<Screen.Onboarding> {
                 OnboardingScreen(
                     onFinished = {
-                        AppSettings.onboardingDone = true
+                        settingsViewModel.finishOnboarding()
                         navController.navigate(afterIntro()) {
                             popUpTo(Screen.Onboarding) { inclusive = true }
                         }
