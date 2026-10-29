@@ -6,7 +6,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
 // Sucht im erkannten Verpackungstext das Ablaufdatum (MHD)
-object ExpiryDateParser {
+object ExpiryDateHelper {
 
     private const val DAY_MS = 24L * 60 * 60 * 1000
 
