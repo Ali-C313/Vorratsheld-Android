@@ -1,5 +1,6 @@
 package com.example.vorratsheld.ui.screens.language
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,16 +20,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.vorratsheld.R
 import com.example.vorratsheld.data.enums.AppLanguage
-import com.example.vorratsheld.data.settings.AppSettings
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.ui.locale.customAppLocale
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
+import com.example.vorratsheld.ui.viewmodel.SettingsViewModel
+import org.koin.androidx.compose.koinViewModel
 
 // Sprache speichern und direkt übernehmen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageScreen(onBack: () -> Unit) {
+fun LanguageScreen(
+    onBack: () -> Unit,
+    viewModel: SettingsViewModel = koinViewModel()
+) {
     val selectLanguage: (String?) -> Unit = { code ->
-        AppSettings.language = code
+        viewModel.selectLanguage(code)
         customAppLocale = code
     }
 
@@ -68,10 +74,11 @@ fun LanguageScreen(onBack: () -> Unit) {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 private fun LanguageScreenPreview() {
     VorratsheldTheme {
-        LanguageScreen(onBack = {})
+        LanguageScreen(onBack = {}, viewModel = SettingsViewModel(SettingsRepositoryMock()))
     }
 }
