@@ -16,7 +16,6 @@ data class ProductDetailUiState(
     val quantity: Int = 1,
     val addedAt: Long = DateHelper.nowMillis(),
     val isEditMode: Boolean = false,
-    val isLoading: Boolean = false,
     @StringRes val errorRes: Int? = null,
     val errorMessage: String? = null
 )
