@@ -1,4 +1,4 @@
-package com.example.vorratsheld.worker
+package com.example.vorratsheld.service
 
 import android.content.Context
 import androidx.work.CoroutineWorker
@@ -6,7 +6,6 @@ import androidx.work.WorkerParameters
 import com.example.vorratsheld.data.enums.ExpiryUrgency
 import com.example.vorratsheld.data.repository.AuthRepository
 import com.example.vorratsheld.data.repository.ProductRepository
-import com.example.vorratsheld.notification.NotificationHelper
 import com.example.vorratsheld.util.DateHelper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
