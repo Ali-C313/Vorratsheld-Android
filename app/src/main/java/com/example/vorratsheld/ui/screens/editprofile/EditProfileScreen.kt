@@ -55,12 +55,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vorratsheld.R
 import com.example.vorratsheld.data.repository.AuthRepositoryMock
 import com.example.vorratsheld.data.repository.ProductRepositoryMock
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.data.repository.ShoppingRepositoryMock
 import com.example.vorratsheld.data.repository.UserRepositoryMock
+import com.example.vorratsheld.service.AppLock
 import com.example.vorratsheld.ui.components.ProfileAvatar
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
 import com.example.vorratsheld.ui.viewmodel.ProfileViewModel
-import com.example.vorratsheld.util.AppLock
 import com.example.vorratsheld.util.ImageHelper
 import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.Dispatchers
@@ -326,7 +327,7 @@ private fun EditProfileScreenPreview() {
     VorratsheldTheme {
         EditProfileScreen(
             onBack = {},
-            viewModel = ProfileViewModel(AuthRepositoryMock(), UserRepositoryMock(), ProductRepositoryMock(), ShoppingRepositoryMock())
+            viewModel = ProfileViewModel(AuthRepositoryMock(), UserRepositoryMock(), ProductRepositoryMock(), ShoppingRepositoryMock(), SettingsRepositoryMock())
         )
     }
 }
