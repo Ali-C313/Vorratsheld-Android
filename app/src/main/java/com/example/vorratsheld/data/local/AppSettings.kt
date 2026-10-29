@@ -1,4 +1,5 @@
-package com.example.vorratsheld.data.settings
+package com.example.vorratsheld.data.local
+
 
 // Einstellungen, die nur auf dem Gerät gespeichert werden
 object AppSettings {
