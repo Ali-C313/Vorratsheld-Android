@@ -57,6 +57,7 @@ import com.example.vorratsheld.data.enums.StorageLocation
 import com.example.vorratsheld.data.repository.AuthRepositoryMock
 import com.example.vorratsheld.data.repository.OpenFoodFactsRepositoryMock
 import com.example.vorratsheld.data.repository.ProductRepositoryMock
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.data.repository.ShoppingRepositoryMock
 import com.example.vorratsheld.data.repository.UserRepositoryMock
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
@@ -295,7 +296,7 @@ private fun ProductDetailScreenPreview() {
                 OpenFoodFactsRepositoryMock(),
                 ShoppingRepositoryMock()
             ),
-            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock())
+            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock(), SettingsRepositoryMock())
         )
     }
 }
