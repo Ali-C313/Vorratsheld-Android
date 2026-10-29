@@ -1,5 +1,6 @@
 package com.example.vorratsheld.ui.screens.applock
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,30 +45,34 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vorratsheld.R
-import com.example.vorratsheld.biometric.rememberBiometricAuthenticator
 import com.example.vorratsheld.data.enums.BiometricResult
 import com.example.vorratsheld.data.enums.BiometricType
 import com.example.vorratsheld.data.enums.LockTimeout
 import com.example.vorratsheld.data.enums.PinFlowMode
-import com.example.vorratsheld.data.settings.AppLockSettings
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
+import com.example.vorratsheld.service.rememberBiometricAuthenticator
 import com.example.vorratsheld.ui.components.SettingsItem
 import com.example.vorratsheld.ui.screens.lock.PinFlowScreen
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
+import com.example.vorratsheld.ui.viewmodel.AppLockViewModel
 import com.example.vorratsheld.util.BiometricHelper
+import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
 
 // Einstellungen der App-Sperre: an/aus, Fingerabdruck, Zeitpunkt, PIN ändern
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppLockSettingsScreen(onBack: () -> Unit) {
+fun AppLockSettingsScreen(
+    onBack: () -> Unit,
+    viewModel: AppLockViewModel = koinViewModel()
+) {
     val authenticator = rememberBiometricAuthenticator()
     val biometricType = remember { authenticator.type }
     val scope = rememberCoroutineScope()
 
-    var enabled by remember { mutableStateOf(AppLockSettings.enabled) }
-    var biometrics by remember { mutableStateOf(AppLockSettings.biometricsEnabled) }
-    var timeout by remember { mutableStateOf(AppLockSettings.timeout) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var pinFlow by remember { mutableStateOf<PinFlowMode?>(null) }
     var showTimeoutDialog by remember { mutableStateOf(false) }
 
@@ -79,24 +84,14 @@ fun AppLockSettingsScreen(onBack: () -> Unit) {
             mode = mode,
             onFinished = {
                 when (mode) {
-                    PinFlowMode.CREATE -> {
-                        enabled = true
-                        // Wer Fingerabdruck oder Gesichtserkennung hat, will es meistens auch nutzen
-                        if (biometricType != BiometricType.NONE) {
-                            AppLockSettings.biometricsEnabled = true
-                            biometrics = true
-                        }
-                    }
-                    PinFlowMode.DISABLE -> {
-                        AppLockSettings.clear()
-                        enabled = false
-                        biometrics = false
-                    }
+                    PinFlowMode.CREATE -> viewModel.onPinCreated(withBiometrics = biometricType != BiometricType.NONE)
+                    PinFlowMode.DISABLE -> viewModel.disable()
                     PinFlowMode.CHANGE -> Unit
                 }
                 pinFlow = null
             },
-            onCancel = { pinFlow = null }
+            onCancel = { pinFlow = null },
+            viewModel = viewModel
         )
         return
     }
@@ -149,31 +144,29 @@ fun AppLockSettingsScreen(onBack: () -> Unit) {
                     icon = Icons.Filled.Lock,
                     title = stringResource(R.string.applock_enable),
                     subtitle = stringResource(R.string.applock_enable_hint),
-                    checked = enabled,
+                    checked = uiState.enabled,
                     onCheckedChange = { on -> pinFlow = if (on) PinFlowMode.CREATE else PinFlowMode.DISABLE }
                 )
             }
 
-            if (enabled) {
+            if (uiState.enabled) {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     if (biometricType != BiometricType.NONE) {
                         SwitchRow(
                             icon = BiometricHelper.icon(biometricType),
                             title = stringResource(R.string.applock_unlock_with, BiometricHelper.label(biometricType)),
                             subtitle = null,
-                            checked = biometrics,
+                            checked = uiState.biometricsEnabled,
                             onCheckedChange = { on ->
                                 if (on) {
                                     // Erst einmal bestätigen lassen, dass es wirklich klappt
                                     scope.launch {
                                         if (authenticator.authenticate(reason, usePin) == BiometricResult.SUCCESS) {
-                                            AppLockSettings.biometricsEnabled = true
-                                            biometrics = true
+                                            viewModel.setBiometricsEnabled(true)
                                         }
                                     }
                                 } else {
-                                    AppLockSettings.biometricsEnabled = false
-                                    biometrics = false
+                                    viewModel.setBiometricsEnabled(false)
                                 }
                             }
                         )
@@ -191,7 +184,7 @@ fun AppLockSettingsScreen(onBack: () -> Unit) {
                     SettingsItem(
                         icon = Icons.Filled.Timer,
                         title = stringResource(R.string.applock_timeout),
-                        subtitle = timeoutLabel(timeout),
+                        subtitle = timeoutLabel(uiState.timeout),
                         onClick = { showTimeoutDialog = true }
                     )
                     HorizontalDivider()
@@ -217,17 +210,16 @@ fun AppLockSettingsScreen(onBack: () -> Unit) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .selectable(
-                                    selected = option == timeout,
+                                    selected = option == uiState.timeout,
                                     role = Role.RadioButton,
                                     onClick = {
-                                        AppLockSettings.timeout = option
-                                        timeout = option
+                                        viewModel.setTimeout(option)
                                         showTimeoutDialog = false
                                     }
                                 )
                                 .padding(vertical = 4.dp)
                         ) {
-                            RadioButton(selected = option == timeout, onClick = null)
+                            RadioButton(selected = option == uiState.timeout, onClick = null)
                             Text(text = timeoutLabel(option), modifier = Modifier.padding(start = 12.dp))
                         }
                     }
@@ -242,10 +234,11 @@ fun AppLockSettingsScreen(onBack: () -> Unit) {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 private fun AppLockSettingsScreenPreview() {
     VorratsheldTheme {
-        AppLockSettingsScreen(onBack = {})
+        AppLockSettingsScreen(onBack = {}, viewModel = AppLockViewModel(SettingsRepositoryMock()))
     }
 }
