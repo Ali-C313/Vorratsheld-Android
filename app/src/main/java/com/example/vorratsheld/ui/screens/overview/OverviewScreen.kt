@@ -49,9 +49,9 @@ import com.example.vorratsheld.data.enums.ExpiryUrgency
 import com.example.vorratsheld.data.enums.StorageLocation
 import com.example.vorratsheld.data.repository.AuthRepositoryMock
 import com.example.vorratsheld.data.repository.ProductRepositoryMock
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.data.repository.ShoppingRepositoryMock
 import com.example.vorratsheld.data.repository.UserRepositoryMock
-import com.example.vorratsheld.notification.ExpiryReminderEffect
 import com.example.vorratsheld.ui.components.ProductCard
 import com.example.vorratsheld.ui.components.SwipeActionButton
 import com.example.vorratsheld.ui.components.SwipeRevealBox
@@ -253,8 +253,8 @@ private fun OverviewScreenPreview() {
             productViewModel = ProductViewModel(ProductRepositoryMock(), ShoppingRepositoryMock()).apply {
                 loadProducts(AuthRepositoryMock.MOCK_USER_ID)
             },
-            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock()),
-            profileViewModel = ProfileViewModel(AuthRepositoryMock(), UserRepositoryMock(), ProductRepositoryMock(), ShoppingRepositoryMock())
+            authViewModel = AuthViewModel(AuthRepositoryMock(), UserRepositoryMock(), SettingsRepositoryMock()),
+            profileViewModel = ProfileViewModel(AuthRepositoryMock(), UserRepositoryMock(), ProductRepositoryMock(), ShoppingRepositoryMock(), SettingsRepositoryMock())
         )
     }
 }
