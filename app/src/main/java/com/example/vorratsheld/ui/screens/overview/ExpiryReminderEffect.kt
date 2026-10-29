@@ -1,4 +1,4 @@
-package com.example.vorratsheld.notification
+package com.example.vorratsheld.ui.screens.overview
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -10,7 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.core.content.ContextCompat
-import com.example.vorratsheld.worker.WorkScheduler
+import com.example.vorratsheld.service.WorkScheduler
 
 // Fragt die Benachrichtigungs-Erlaubnis an und plant den täglichen Ablauf-Check ein
 @Composable
