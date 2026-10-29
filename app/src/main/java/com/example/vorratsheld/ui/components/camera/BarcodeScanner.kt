@@ -1,4 +1,4 @@
-package com.example.vorratsheld.camera
+package com.example.vorratsheld.ui.components.camera
 
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
