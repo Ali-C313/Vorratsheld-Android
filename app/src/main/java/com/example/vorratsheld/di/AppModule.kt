@@ -8,17 +8,21 @@ import com.example.vorratsheld.data.repository.OpenFoodFactsRepository
 import com.example.vorratsheld.data.repository.OpenFoodFactsRepositoryImpl
 import com.example.vorratsheld.data.repository.ProductRepository
 import com.example.vorratsheld.data.repository.ProductRepositoryImpl
+import com.example.vorratsheld.data.repository.SettingsRepository
+import com.example.vorratsheld.data.repository.SettingsRepositoryImpl
 import com.example.vorratsheld.data.repository.ShoppingRepository
 import com.example.vorratsheld.data.repository.ShoppingRepositoryImpl
 import com.example.vorratsheld.data.repository.SupportRepository
 import com.example.vorratsheld.data.repository.SupportRepositoryImpl
 import com.example.vorratsheld.data.repository.UserRepository
 import com.example.vorratsheld.data.repository.UserRepositoryImpl
+import com.example.vorratsheld.ui.viewmodel.AppLockViewModel
 import com.example.vorratsheld.ui.viewmodel.AuthViewModel
 import com.example.vorratsheld.ui.viewmodel.ProductDetailViewModel
 import com.example.vorratsheld.ui.viewmodel.ProductInfoViewModel
 import com.example.vorratsheld.ui.viewmodel.ProductViewModel
 import com.example.vorratsheld.ui.viewmodel.ProfileViewModel
+import com.example.vorratsheld.ui.viewmodel.SettingsViewModel
 import com.example.vorratsheld.ui.viewmodel.ShoppingListViewModel
 import com.example.vorratsheld.ui.viewmodel.SupportViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +44,7 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get()) }
     single<SupportRepository> { SupportRepositoryImpl(get(), get()) }
     single<OpenFoodFactsRepository> { OpenFoodFactsRepositoryImpl(get()) }
+    single<SettingsRepository> { SettingsRepositoryImpl() }
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::ProductViewModel)
@@ -48,4 +53,6 @@ val appModule = module {
     viewModelOf(::ShoppingListViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::SupportViewModel)
+    viewModelOf(::AppLockViewModel)
+    viewModelOf(::SettingsViewModel)
 }
