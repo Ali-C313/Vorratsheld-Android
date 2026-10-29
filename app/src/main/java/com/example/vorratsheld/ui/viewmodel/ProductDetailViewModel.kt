@@ -43,25 +43,24 @@ class ProductDetailViewModel(
 
     // Neues Produkt nach einem Scan: Barcode ist bekannt, Rest wird von Open Food Facts vorbefüllt
     private fun loadForNewScan(barcode: String) {
-        _uiState.value = _uiState.value.copy(barcode = barcode, isLoading = true)
+        _uiState.value = _uiState.value.copy(barcode = barcode)
         viewModelScope.launch {
             openFoodFactsRepository.fetchProductByBarcode(barcode)
                 .onSuccess { info ->
                     _uiState.value = _uiState.value.copy(
-                        isLoading = false,
                         name = info?.name ?: "",
                         imageUrl = info?.imageUrl
                     )
                 }
                 .onFailure { e ->
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
+                    _uiState.value = _uiState.value.copy(errorMessage = e.message)
                 }
         }
     }
 
     // Bestehendes Produkt zum Bearbeiten laden
     private fun loadForEdit(productId: String) {
-        _uiState.value = _uiState.value.copy(productId = productId, isLoading = true, isEditMode = true)
+        _uiState.value = _uiState.value.copy(productId = productId, isEditMode = true)
         viewModelScope.launch {
             productRepository.getProductById(productId)
                 .onSuccess { product ->
@@ -79,11 +78,11 @@ class ProductDetailViewModel(
                             isEditMode = true
                         )
                     } else {
-                        _uiState.value = _uiState.value.copy(isLoading = false, errorRes = R.string.error_product_not_found)
+                        _uiState.value = _uiState.value.copy(errorRes = R.string.error_product_not_found)
                     }
                 }
                 .onFailure { e ->
-                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message)
+                    _uiState.value = _uiState.value.copy(errorMessage = e.message)
                 }
         }
     }
