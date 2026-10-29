@@ -1,5 +1,6 @@
 package com.example.vorratsheld.ui.screens.lock
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,20 +32,21 @@ import androidx.compose.ui.unit.dp
 import com.example.vorratsheld.R
 import com.example.vorratsheld.data.enums.PinFlowMode
 import com.example.vorratsheld.data.enums.PinStep
-import com.example.vorratsheld.data.settings.AppLockSettings
+import com.example.vorratsheld.data.local.AppLockSettings
+import com.example.vorratsheld.data.repository.SettingsRepositoryMock
 import com.example.vorratsheld.ui.components.PinPad
 import com.example.vorratsheld.ui.theme.LockGradient
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.vorratsheld.ui.viewmodel.AppLockViewModel
+import org.koin.androidx.compose.koinViewModel
 
 // PIN festlegen, ändern oder zum Ausschalten bestätigen
 @Composable
 fun PinFlowScreen(
     mode: PinFlowMode,
     onFinished: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    viewModel: AppLockViewModel = koinViewModel()
 ) {
     var step by remember { mutableStateOf(if (mode == PinFlowMode.CREATE) PinStep.NEW else PinStep.VERIFY) }
     var entered by remember { mutableStateOf("") }
@@ -53,7 +54,6 @@ fun PinFlowScreen(
     var errorText by remember { mutableStateOf<String?>(null) }
     var shakeTrigger by remember { mutableIntStateOf(0) }
     var busy by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     val wrongPin = stringResource(R.string.lock_wrong_pin)
     val mismatch = stringResource(R.string.pin_mismatch)
@@ -72,8 +72,7 @@ fun PinFlowScreen(
         when (step) {
             PinStep.VERIFY -> {
                 busy = true
-                scope.launch {
-                    val correct = withContext(Dispatchers.Default) { AppLockSettings.checkPin(pin) }
+                viewModel.checkPin(pin) { correct ->
                     busy = false
                     when {
                         !correct -> fail(wrongPin)
@@ -96,8 +95,7 @@ fun PinFlowScreen(
                     fail(mismatch)
                 } else {
                     busy = true
-                    scope.launch {
-                        withContext(Dispatchers.Default) { AppLockSettings.setPin(pin) }
+                    viewModel.setPin(pin) {
                         busy = false
                         onFinished()
                     }
@@ -160,10 +158,16 @@ fun PinFlowScreen(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 private fun PinFlowScreenPreview() {
     VorratsheldTheme {
-        PinFlowScreen(mode = PinFlowMode.CREATE, onFinished = {}, onCancel = {})
+        PinFlowScreen(
+            mode = PinFlowMode.CREATE,
+            onFinished = {},
+            onCancel = {},
+            viewModel = AppLockViewModel(SettingsRepositoryMock())
+        )
     }
 }
