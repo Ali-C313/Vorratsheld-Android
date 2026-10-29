@@ -2,7 +2,11 @@ package com.example.vorratsheld.util
 
 import android.os.Build
 
-const val APP_VERSION = "1.0"
+// Version und Gerät, gehen bei Support-Anfragen mit
+object AppInfo {
 
-// z. B. "Android 15", geht bei Support-Anfragen mit
-val deviceName: String = "Android ${Build.VERSION.RELEASE}"
+    const val VERSION = "1.0"
+
+    // z. B. "Android 15"
+    val deviceName: String = "Android ${Build.VERSION.RELEASE}"
+}
