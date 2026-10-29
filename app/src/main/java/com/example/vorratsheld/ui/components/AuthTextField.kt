@@ -30,6 +30,7 @@ import com.example.vorratsheld.R
 import com.example.vorratsheld.ui.theme.VorratsheldTheme
 
 /** Textfeld mit Icon vorne; bei Passwörtern mit Auge zum Ein-/Ausblenden. */
+// Eingabefeld für Login und Registrierung, bei Passwörtern mit Auge zum Einblenden
 @Composable
 fun AuthTextField(
     value: String,
