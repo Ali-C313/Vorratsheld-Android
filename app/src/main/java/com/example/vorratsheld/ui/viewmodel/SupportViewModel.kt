@@ -8,9 +8,8 @@ import com.example.vorratsheld.data.model.SupportRequest
 import com.example.vorratsheld.data.repository.AuthRepository
 import com.example.vorratsheld.data.repository.SupportRepository
 import com.example.vorratsheld.ui.state.SupportUiState
-import com.example.vorratsheld.util.APP_VERSION
+import com.example.vorratsheld.util.AppInfo
 import com.example.vorratsheld.util.DateHelper
-import com.example.vorratsheld.util.deviceName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,8 +62,8 @@ class SupportViewModel(
                     category = state.category,
                     subject = state.subject.trim(),
                     message = state.message.trim(),
-                    platform = deviceName,
-                    appVersion = APP_VERSION,
+                    platform = AppInfo.deviceName,
+                    appVersion = AppInfo.VERSION,
                     createdAt = DateHelper.nowMillis()
                 )
             )
