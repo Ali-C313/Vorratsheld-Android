@@ -1,7 +1,7 @@
-package com.example.vorratsheld.util
+package com.example.vorratsheld.service
 
 import com.example.vorratsheld.data.enums.LockTimeout
-import com.example.vorratsheld.data.settings.AppLockSettings
+import com.example.vorratsheld.data.local.AppLockSettings
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
