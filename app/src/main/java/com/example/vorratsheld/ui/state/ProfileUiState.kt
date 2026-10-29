@@ -9,7 +9,6 @@ data class ProfileUiState(
     val email: String = "",          // aktuelle Adresse aus Firebase Auth
     val newEmail: String = "",       // Eingabefeld, kann geändert werden
     val photoBase64: String? = null,
-    val isLoading: Boolean = true,
     val isSaving: Boolean = false,
     @StringRes val messageRes: Int? = null,   // Erfolgsmeldung für die Snackbar
     val messageArg: String = "",
