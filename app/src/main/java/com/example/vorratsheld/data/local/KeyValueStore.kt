@@ -1,4 +1,4 @@
-package com.example.vorratsheld.data.settings
+package com.example.vorratsheld.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
